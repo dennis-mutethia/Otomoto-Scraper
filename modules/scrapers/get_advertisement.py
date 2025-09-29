@@ -38,7 +38,7 @@ class AdvertisementFetcher:
 
     def _download_url(self, path) -> Dict[str, str]:
         try:
-            file_logger.info(f'Fetching {path}')
+            file_logger.info('Fetching %s', path)
             headers = [
                 {
                     'User-Agent':
@@ -101,7 +101,7 @@ class AdvertisementFetcher:
             features = self._make_line(features)
 
         except Exception as e:
-            file_logger.error(f'Error {e} while fetching {path}')
+            file_logger.error('Error %s while fetching %s', e, path)
             return None
 
         time.sleep(0.25)
@@ -137,10 +137,8 @@ class AdvertisementFetcher:
                     for param in main_params
                 }
             except Exception as e:
-                console_logger.error(
-                    f'Error {e} while fetching main features from {path}')
-                file_logger.error(
-                    f'Error {e} while fetching main features from {path}')
+                console_logger.error('Error %s while fetching main features from %s', e, path)
+                file_logger.error('Error %s while fetching main features from %s', e, path)
                 pass
         return features
 
@@ -164,10 +162,8 @@ class AdvertisementFetcher:
                 for param in extendend_params:
                     features[param.text.strip()] = 1
             except Exception as e:
-                console_logger.error(
-                    f'Error {e} while fetching extended features from {path}')
-                file_logger.error(
-                    f'Error {e} while fetching extended features from {path}')
+                console_logger.error('Error %s while fetching extended features from %s', e, path)
+                file_logger.error('Error %s while fetching extended features from %s', e, path)
                 pass
         return features
 
@@ -187,8 +183,8 @@ class AdvertisementFetcher:
                 features['Cena'] = price
             except Exception:
                 features['Cena'] = None
-                console_logger.info(f'Price not found in {path}')
-                file_logger.info(f'Price not found in {path}')
+                console_logger.warning('Price not found in %s', path)
+                file_logger.warning('Price not found in %s', path)
         return features
 
     def _get_currency(self, path, soup) -> Dict[str, str]:
@@ -204,8 +200,8 @@ class AdvertisementFetcher:
                 features['Waluta'] = currency
             except Exception:
                 features['Waluta'] = None
-                console_logger.info(f'Currency not found in {path}')
-                file_logger.info(f'Currency not found in {path}')
+                console_logger.warning('Currency not found in %s', path)
+                file_logger.warning('Currency not found in %s', path)
         return features
 
     def _get_price_details(self, path, soup) -> Dict[str, str]:
@@ -223,7 +219,7 @@ class AdvertisementFetcher:
                 features['Szczegóły ceny'] = price_details
             except Exception:
                 features['Szczegóły ceny'] = None
-                file_logger.info(f'Price details not found in {path}')
+                file_logger.info('Price details not found in %s', path)
         return features
 
     def fetch_ads(self, links):
@@ -254,12 +250,12 @@ class AdvertisementFetcher:
             Args:
                  model: model
         """
-        file_logger.info(f'Saving {model} ads')
-        file_logger.info(f'Found {len(self._cars)} ads')
-        console_logger.info(f'Found {len(self._cars)} ads')
-        pd.DataFrame(self._cars).to_csv(
-            f'output/data/{model}.csv', index=False)
-        file_logger.info(f'Saved {model} ads')
+        file_logger.info('Saving %s ads', model)
+        file_logger.info('Found %s ads', len(self._cars))
+        console_logger.info('Found %s ads', len(self._cars))
+        os.makedirs('output/data', exist_ok=True)
+        pd.DataFrame(self._cars).to_csv(f'output/data/{model}.csv', index=False)
+        file_logger.info(f'Saved %s ads', model)
 
     def setup_fetcher(self):
         self._cars = []

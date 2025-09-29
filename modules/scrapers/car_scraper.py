@@ -199,6 +199,10 @@ class CarScraper:
                 file_logger.error('Error while combining data: %s', e)
                 pass
         df_all = pd.concat(combined_data, ignore_index=True)
+        
+        # Ensure the output directory exists
+        os.makedirs('output/data', exist_ok=True)
+        
         df_all.to_csv('output/data/car.csv', index=False)
         console_logger.info('Combined data saved to car.csv')
         file_logger.info('Combined data saved to car.csv')
