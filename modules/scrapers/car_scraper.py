@@ -175,9 +175,9 @@ class CarScraper:
         for model in self.models:
             try:
                 self.scrap_model(model)
-            except Exception:
-                console_logger.error('Error while scrapping model: %s', model)
-                file_logger.error('Error while scrapping model: %s', model)
+            except Exception as e:
+                console_logger.error('Error while scrapping model: %s: %s', model, e)
+                file_logger.error('Error while scrapping model: %s: %s', model, e)
                 pass
         console_logger.info('End scrapping cars')
         file_logger.info('End scrapping cars')
@@ -194,7 +194,9 @@ class CarScraper:
             try:
                 combined_data.append(pd.read_csv(
                     filename, index_col=False, low_memory=False))
-            except Exception:
+            except Exception as e:
+                console_logger.error('Error while combining data: %s', e)
+                file_logger.error('Error while combining data: %s', e)
                 pass
         df_all = pd.concat(combined_data, ignore_index=True)
         df_all.to_csv('output/data/car.csv', index=False)
